@@ -165,15 +165,15 @@ def _regularize_audios(
 
 def feature_extract_single(video_info, processor_path, feature_dir,  progress_queue=None,video_frames=100,dynamic=False,dataset="worldsense", max_frames=32, model_type="qwen2_5omni"):
     """
-    单个视频的特征提取函数（多进程版本）
+    Single video feature extraction function (multiprocessing version)
     
     Args:
-        video_info: 包含video_name和duration的字典
-        processor_path: processor路径
-        feature_dir: 特征保存目录
-        frame_dir: 帧目录
-        audio_dir: 音频目录（可选）
-        progress_queue: 进度队列
+        video_info: Dictionary containing video_name and duration
+        processor_path: Path to processor
+        feature_dir: Directory to save features
+        frame_dir: Frame directory
+        audio_dir: Audio directory (optional)
+        progress_queue: Progress queue
     
     Returns:
         (video_name, success, error_message)
@@ -347,9 +347,9 @@ def feature_extract_single(video_info, processor_path, feature_dir,  progress_qu
         
 
 def progress_monitor(progress_queue, total_videos):
-    """进度监控器"""
+    """Progress monitor"""
     completed = 0
-    with tqdm(total=total_videos, desc="特征提取进度", unit="videos") as pbar:
+    with tqdm(total=total_videos, desc="Feature extraction progress", unit="videos") as pbar:
         while completed < total_videos:
             try:
                 progress_queue.get(timeout=1)
@@ -368,40 +368,40 @@ def batch_feature_extract(
     chunk_size=1,dynamic = False, model_type="qwen2_5", write=False
 ):
     """
-    批量特征提取（多进程版本）
+    Batch feature extraction (multiprocessing version)
     
     Args:
-        video_infos: 视频信息列表，每个元素包含video_name和duration
-        processor_path: processor路径
-        feature_dir: 特征保存目录
-        frame_dir: 帧目录
-        audio_dir: 音频目录（可选）
-        max_workers: 最大进程数
-        chunk_size: 每个进程处理的批次大小
+        video_infos: List of video information, each element contains video_name and duration
+        processor_path: Path to processor
+        feature_dir: Directory to save features
+        frame_dir: Frame directory
+        audio_dir: Audio directory (optional)
+        max_workers: Maximum number of processes
+        chunk_size: Batch size processed by each process
     
     Returns:
-        处理结果统计
+        Processing result statistics
     """
     
     if max_workers is None:
-        max_workers = min(cpu_count() // 2, 8)  # 保守设置，避免内存不足
+        max_workers = min(cpu_count() // 2, 8)  # Conservative setting to avoid memory shortage
     
-    # 创建输出目录
+    # Create output directory
     os.makedirs(feature_dir, exist_ok=True)
     
     total_videos = len(video_infos)
-    print(f"开始批量特征提取")
-    print(f"总视频数: {total_videos}")
-    print(f"使用进程数: {max_workers}")
-    print(f"处理器路径: {processor_path}")
-    print(f"特征保存目录: {feature_dir}")
+    print(f"Starting batch feature extraction")
+    print(f"Total videos: {total_videos}")
+    print(f"Number of processes: {max_workers}")
+    print(f"Processor path: {processor_path}")
+    print(f"Feature save directory: {feature_dir}")
     print("-" * 60)
     
-    # 创建进度队列
+    # Create progress queue
     manager = Manager()
     progress_queue = manager.Queue()
     
-    # 启动进度监控
+    # Start progress monitoring
     from multiprocessing import Process
     monitor_process = Process(
         target=progress_monitor,
@@ -409,7 +409,7 @@ def batch_feature_extract(
     )
     monitor_process.start()
     
-    # 创建部分函数
+    # Create partial function
     extract_func = partial(
         feature_extract_single,
         processor_path=processor_path,
@@ -427,48 +427,48 @@ def batch_feature_extract(
     
     try:
         with Pool(processes=max_workers) as pool:
-            # 使用map进行并行处理
+            # Use map for parallel processing
             results = pool.map(extract_func, video_infos, chunksize=chunk_size)
             
     except KeyboardInterrupt:
-        print("\n用户中断处理")
+        print("\nUser interrupted processing")
         monitor_process.terminate()
         return None
     except Exception as e:
-        print(f"处理过程中出错: {e}")
+        print(f"Error during processing: {e}")
         monitor_process.terminate()
         return None
     
-    # 等待进度监控完成
+    # Wait for progress monitoring to complete
     monitor_process.join()
     
     end_time = time.time()
     elapsed_time = end_time - start_time
     
-    # 统计结果
+    # Statistics results
     successful = sum(1 for _, success, _ in results if success)
     failed = total_videos - successful
     already_exists = sum(1 for _, success, msg in results if success and msg == "already_exists")
     
     print("\n" + "=" * 60)
-    print("特征提取完成统计")
+    print("Feature extraction completion statistics")
     print("=" * 60)
-    print(f"总视频数: {total_videos}")
-    print(f"成功处理: {successful}")
-    print(f"处理失败: {failed}")
-    print(f"已存在文件: {already_exists}")
-    print(f"新处理文件: {successful - already_exists}")
-    print(f"总耗时: {elapsed_time:.2f} 秒")
-    print(f"平均每个视频: {elapsed_time/total_videos:.2f} 秒")
+    print(f"Total videos: {total_videos}")
+    print(f"Successfully processed: {successful}")
+    print(f"Processing failed: {failed}")
+    print(f"Files already exist: {already_exists}")
+    print(f"Newly processed files: {successful - already_exists}")
+    print(f"Total time: {elapsed_time:.2f} seconds")
+    print(f"Average per video: {elapsed_time/total_videos:.2f} seconds")
     
-    # 保存失败列表
+    # Save failed list
     failed_videos = [video_name for video_name, success, _ in results if not success]
     if failed_videos:
         failed_path = os.path.join(feature_dir, "failed_videos.txt")
         with open(failed_path, 'w') as f:
             for video_name in failed_videos:
                 f.write(f"{video_name}\n")
-        print(f"失败视频列表已保存到: {failed_path}")
+        print(f"Failed video list saved to: {failed_path}")
     
     return {
         'total': total_videos,
@@ -533,7 +533,7 @@ def prepare_video_infos_omninext(data_file, video_root = None, train = False):
     return video_infos
 import argparse
 if __name__ == "__main__":
-    # 配置参数
+    # Configure parameters
     parser = argparse.ArgumentParser()
     parser.add_argument("--processor_path", default="Qwen2.5-Omni-7B")
     parser.add_argument("--dataset", default="omnivideobench")
