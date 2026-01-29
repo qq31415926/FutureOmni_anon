@@ -1,7 +1,7 @@
 
 <div align="center">
 
-<img src="./static/images/logo0.png" width="180" alt="FutureOmni Logo">
+<img src="logo0.png" width="180" alt="FutureOmni Logo">
 
 # FutureOmni: Evaluating Future Forecasting from Omni-Modal Context for Multimodal LLMs
 
@@ -27,6 +27,7 @@ Although Multimodal Large Language Models (MLLMs) demonstrate strong omni-modal 
 
 ## 📊 Leaderboard
 
+
 *Snapshot of Zero-shot performance (Accuracy %). See the paper for full results.*
 
 | Model | Size | Speech | Sound | Music | **Avg** |
@@ -42,7 +43,7 @@ Although Multimodal Large Language Models (MLLMs) demonstrate strong omni-modal 
 ---
 ## 🌰 Data Example
 <div align="center">
-    <img src="./static/images/intro.png" width="100%">
+    <img src="intro.png" width="100%">
 </div>
 
 ---
@@ -76,23 +77,23 @@ We conduct extensive evaluations on **13 omni-modal** and **7 video-only** model
 
 ### Overall Performance
 <div align="center">
-    <img src="./static/images/experiments/category_results_crop.png" width="100%">
+    <img src="category_results_crop.png" width="100%">
     <p>Overall Performance on Categories</p>
 </div>
 
 ### 🔍 Fine-grained Results
 <div align="center">
-    <img src="./static/images/fine_results_1.png" width="100%" alt="">
+    <img src="fine_results_1.png" width="100%" alt="">
     <p>Fine-grained Results on Audio Type</p>
 </div>
 <div align="center">
-    <img src="./static/images/fine_results_2.png" width="100%" alt="">
+    <img src="fine_results_2.png" width="100%" alt="">
     <p>Fine-grained Results on Video Duration</p>
 </div>
 
 ### 🧠 In-depth Analysis
 <div align="center">
-    <img src="./static/images/experiments/modality_ablation_crop.png"
+    <img src="modality_ablation_crop.png"
         style="max-width: 100%; height: auto;" 
      >
     <p>Modality Ablation Results</p>
@@ -108,21 +109,21 @@ To mitigate current limitations, we curate a **7K-sample instruction-tuning data
 **Key Finding:** Evaluations on **FutureOmni** and popular audio-visual (e.g., WorldSense, DailyOmni) and video-only (e.g., Video-MME) benchmarks demonstrate that the **OFF** strategy significantly enhances both future forecasting and general perception.
 
 <div align="center">
-    <img src="./static/images/experiments/FutureOmni-7k-results_crop.png" 
+    <img src="FutureOmni-7k-results_crop.png" 
     style="max-width: 70%; height: auto;" 
     >
     <p>Fine-grained Audio Performance</p>
 </div>
 
 <div align="center">
-    <img src="./static/images/experiments/FutureOmni-7k-results-duration_crop.png" 
+    <img src="FutureOmni-7k-results-duration_crop.png" 
     style="max-width: 100%; height: auto;" 
     >
     <p>Fine-grained Video Category Performance</p>
 </div>
 
 <div align="center">
-    <img src="./static/images/experiments/FutureOmni-7k-results-generalization-results_crop.png" 
+    <img src="FutureOmni-7k-results-generalization-results_crop.png" 
               style="max-width: 100%; height: auto;" 
     >
     <p>General Capability</p>
